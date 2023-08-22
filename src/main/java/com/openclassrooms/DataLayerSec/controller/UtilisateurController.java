@@ -48,7 +48,7 @@ public class UtilisateurController {
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model) {
 		// Rechercher l'utilisateur actuel par son adresse e-mail
-		// Utilisez les informations d'authentification si Spring Secrity
+		// Utilisez les informations d'authentification si Spring Security
 		Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail("badr@gmail.com");
 
 		// Utilisateur utilisateurActuel = ...;
