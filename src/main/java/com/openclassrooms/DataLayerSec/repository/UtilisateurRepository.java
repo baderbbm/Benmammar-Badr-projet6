@@ -8,8 +8,7 @@ import com.openclassrooms.DataLayerSec.model.Utilisateur;
 
 @Repository
 public interface UtilisateurRepository extends CrudRepository<Utilisateur, Integer> {
-	
-	
+		
 	// requêtes dérivées
 	public Iterable<Utilisateur> findByNom(String name);
 	
