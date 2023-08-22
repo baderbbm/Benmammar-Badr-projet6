@@ -4,8 +4,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
-import com.openclassrooms.DataLayerSec.model.Transfert;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.UtilisateurRepository;
  
@@ -22,11 +20,6 @@ public class UtilisateurService {
 	public Optional<Utilisateur> getUserById(Integer id) {
 		return utilisateurRepository.findById(id); 
 	}	
-	
-	/*
-	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
-		return utilisateurRepository.save(utilisateur);		
-	}*/
 	
 	public class EmailExistsException extends RuntimeException {
 	    public EmailExistsException(String message) {
