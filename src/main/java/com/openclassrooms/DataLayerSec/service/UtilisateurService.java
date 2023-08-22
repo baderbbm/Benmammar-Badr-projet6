@@ -21,6 +21,8 @@ public class UtilisateurService {
 		return utilisateurRepository.findById(id); 
 	}	
 	
+	
+	// exception personnalisée 
 	public class EmailExistsException extends RuntimeException {
 	    public EmailExistsException(String message) {
 	        super(message);
@@ -31,6 +33,7 @@ public class UtilisateurService {
 	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
         try {
             return utilisateurRepository.save(utilisateur);
+            // capturer et traiter spécifiquement l'exception liée à l'existence d'un emai
         } catch (DataIntegrityViolationException ex) {
             throw new EmailExistsException("L'email existe déjà.");
         }
