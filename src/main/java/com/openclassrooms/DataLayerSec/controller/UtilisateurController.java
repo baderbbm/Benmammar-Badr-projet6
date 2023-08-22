@@ -24,7 +24,7 @@ public class UtilisateurController {
 	@GetMapping("/enregistrerUtilisateur")
 	public String showEnregistrerUtilisateurForm(ModelMap model) {
 		model.put("utilisateur", new Utilisateur());
-		return "enregistrer-utilisateur"; // Correspond au nom du fichier sans l'extension
+		return "enregistrer-utilisateur"; 
 	}
 
 	@PostMapping("/enregistrerUtilisateur")
@@ -32,7 +32,6 @@ public class UtilisateurController {
 		try {
 			utilisateurService.addUtilisateur(utilisateur);
 			model.addAttribute("success", "L'utilisateur a été enregistré avec succès.");
-			// return "redirect:/enregistrerUtilisateur";
 			return "enregistrer-utilisateur";
 		} catch (EmailExistsException e) {
 			model.addAttribute("error", "Cet email existe déjà.");
@@ -42,14 +41,14 @@ public class UtilisateurController {
 
 	@GetMapping("/ajouterAmi")
 	public String showAjouterAmiForm(ModelMap model) {
-		model.put("ami", new Utilisateur()); // Ajoutez un nouvel ami à ajouter
-		return "ajouter-ami"; // Correspond au nom du fichier sans l'extension
+		model.put("ami", new Utilisateur()); 
+		return "ajouter-ami";
 	}
 
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model) {
 		// Rechercher l'utilisateur actuel par son adresse e-mail
-		// Utilisez les informations d'authentification
+		// Utilisez les informations d'authentification si Spring Secrity
 		Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail("badr@gmail.com");
 
 		// Utilisateur utilisateurActuel = ...;
@@ -57,7 +56,6 @@ public class UtilisateurController {
 		// Rechercher l'ami par son adresse e-mail
 		Utilisateur ami = utilisateurService.findByAdresseEmail(adresseEmailAmi);
 		if (ami != null) {
-			// Vérifier si l'ami est déjà dans la liste d'amis de l'utilisateur
 			if (!utilisateurActuel.getAmis().contains(ami)) {
 				utilisateurService.ajouterAmi(utilisateurActuel, ami);
 				model.addAttribute("success", "Ami ajouté avec succès.");
@@ -68,6 +66,6 @@ public class UtilisateurController {
 			model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
 		}
 
-		return "ajouter-ami"; // Rediriger vers la page de l'utilisateur
+		return "ajouter-ami";
 	}
 }
