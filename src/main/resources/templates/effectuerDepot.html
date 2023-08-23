@@ -1,0 +1,6 @@
+<form th:action="@{/effectuerDepot}" method="post">
+    <input type="hidden" name="utilisateurId" th:value="${utilisateur.utilisateurId}" />
+    <label for="montant">Montant du dépôt :</label>
+    <input type="number" step="0.01" name="montant" required />
+    <button type="submit">Effectuer le dépôt</button>
+</form>
