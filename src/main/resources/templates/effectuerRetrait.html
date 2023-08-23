@@ -1,0 +1,6 @@
+<form th:action="@{/effectuerRetrait}" method="post">
+    <input type="hidden" name="utilisateurId" th:value="${utilisateur.utilisateurId}" />
+    <label for="montant">Montant du retrait :</label>
+    <input type="number" step="0.01" name="montant" required />
+    <button type="submit">Effectuer le retrait</button>
+</form>
