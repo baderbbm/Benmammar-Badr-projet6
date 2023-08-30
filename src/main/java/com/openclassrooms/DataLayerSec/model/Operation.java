@@ -24,7 +24,7 @@ public class Operation {
 
     @ManyToOne
     @JoinColumn(name = "IDutilisateur", referencedColumnName = "ID")
-    private Utilisateur utilisateur;
+   private Utilisateur utilisateur;
 
     @Column(name = "Montant")
     private BigDecimal montant;
