@@ -21,14 +21,14 @@ public class Transfert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int transfertId;
+    
+    @ManyToOne
+  	@JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID")
+  	private Utilisateur utilisateurEmetteur;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID", insertable = false, updatable = false)
-	private Utilisateur utilisateurEmetteur;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-  	@JoinColumn(name = "IDutilisateurbeneficiaire", referencedColumnName = "ID", insertable = false, updatable = false)
-  	private Utilisateur utilisateurBeneficiaire;
+      @ManyToOne
+    	@JoinColumn(name = "IDutilisateurbeneficiaire", referencedColumnName = "ID")
+    	private Utilisateur utilisateurBeneficiaire;
     
     @Column(name = "Montant")
     private BigDecimal montant;
@@ -78,9 +78,9 @@ public class Transfert {
 
 	@Override
 	public String toString() {
-		return "Transfert [transfertId=" + transfertId + ", utilisateurEmetteur=" + utilisateurEmetteur
+		return "transfertId=" + transfertId + ", utilisateurEmetteur=" + utilisateurEmetteur
 				+ ", utilisateurBeneficiaire=" + utilisateurBeneficiaire + ", montant=" + montant
-				+ ", dateHeureTransfert=" + dateHeureTransfert + "]";
+				+ ", dateHeureTransfert=" + dateHeureTransfert;
 	}
 
    
