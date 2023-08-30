@@ -3,11 +3,7 @@ package com.openclassrooms.DataLayerSec.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.annotations.DynamicUpdate;
-
-import com.openclassrooms.DataLayerSec.service.UtilisateurService.InsufficientBalanceException;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -43,13 +39,6 @@ public class Utilisateur {
 	@Column(name = "soldeducompte")
 	private BigDecimal soldeDuCompte;
 
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch =
-	 * FetchType.LAZY)
-	 * 
-	 * @JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID")
-	 */
-
 	@OneToMany
 	@JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID")
 	List<Transfert> transferts = new ArrayList<>();
@@ -63,33 +52,6 @@ public class Utilisateur {
 	}
 
 
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch =
-	 * FetchType.LAZY)
-	 * 
-	 * @JoinColumn(name = "IDutilisateurdeposant", referencedColumnName = "ID")
-	 * 
-	 * List<Depot> depots = new ArrayList<>();
-	 * 
-	 * 
-	 * public List<Depot> getDepots() { return depots; }
-	 * 
-	 * 
-	 * public void setDepots(List<Depot> depots) { this.depots = depots; }
-	 * 
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch =
-	 * FetchType.LAZY)
-	 * 
-	 * @JoinColumn(name = "IDutilisateurretirant", referencedColumnName = "ID")
-	 * List<Retrait> retraits = new ArrayList<>();
-	 * 
-	 * public List<Retrait> getRetraits() { return retraits; }
-	 * 
-	 * 
-	 * public void setRetraits(List<Retrait> retraits) { this.retraits = retraits; }
-	 * 
-	 */
 	@OneToMany
 	@JoinColumn(name = "IDutilisateur", referencedColumnName = "ID")
 	List<Operation> operations = new ArrayList<>();
