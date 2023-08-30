@@ -1,10 +1,13 @@
 package com.openclassrooms.DataLayerSec.service;
  
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Transfert;
+import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.TransfertRepository;
  
 @Service
@@ -28,5 +31,9 @@ public class TransfertService {
 	public void deleteTransfertById(Integer id) {
 		transfertRepository.deleteById(id);
 	}
+	
+	public List<Transfert> getVirementsByUtilisateurEmetteur(Utilisateur utilisateurEmetteur) {
+        return transfertRepository.findByUtilisateurEmetteur(utilisateurEmetteur);
+    }
 
 }
