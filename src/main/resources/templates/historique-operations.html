@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<img th:src="@{/banque.png}" alt="Description de l'image" style="width: 800px; height: 250px;">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Historique des opérations</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
+</head>
+<body>
+    <h3>Historique des opérations</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="operation : ${operations}">
+                <td th:text="${operation.dateetheureoperation}"></td>
+                <td th:text="${operation.natureoperation}"></td>
+                <td th:text="${operation.montant}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Historique des transferts</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Bénéficiaire</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="transfert : ${transferts}">
+                <td th:text="${transfert.dateHeureTransfert}"></td>
+                <td th:text="${transfert.montant}"></td>
+                <td th:text="${transfert.utilisateurBeneficiaire.nom}"></td>
+                 <td th:text="${transfert.utilisateurBeneficiaire.prenom}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Lien pour revenir à la page d'accueil -->
+    <a th:href="@{/home}">Retour à la page d'accueil</a>
+</body>
+</html>
