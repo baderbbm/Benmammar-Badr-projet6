@@ -1,4 +1,3 @@
-
 package com.openclassrooms.DataLayerSec.dto;
 
 import java.math.BigDecimal;
