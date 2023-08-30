@@ -1,6 +1,26 @@
-<form th:action="@{/effectuerRetrait}" method="post">
-    <input type="hidden" name="utilisateurId" th:value="${utilisateur.utilisateurId}" />
-    <label for="montant">Montant du retrait :</label>
-    <input type="number" step="0.01" name="montant" required />
-    <button type="submit">Effectuer le retrait</button>
-</form>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<img th:src="@{/banque.png}" alt="Description de l'image" style="width: 800px; height: 250px;">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Effectuer un retrait</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
+</head>
+<body>
+    <h3>Effectuer un retrait</h3>
+    
+    <form th:action="@{/effectuerRetrait}" method="post">
+        <label for="montant">Montant du retrait :</label>
+        <input type="number" step="0.01" name="montant" th:value="${montant}" required />
+        <button type="submit">Effectuer le retrait</button>
+    </form>
+    
+ <!-- Afficher les messages d'erreur ou de succès -->
+    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    <div th:if="${success}" class="success-message" th:text="${success}"></div>
+    
+      <!-- Lien pour revenir à home.html -->
+    <a th:href="@{/home}">Retour à la page d'accueil</a>
+</body>
+</html>
