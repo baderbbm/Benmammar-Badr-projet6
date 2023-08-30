@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Accueil</title>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
+</head>
+
+<img th:src="@{/banque.png}" alt="Description de l'image" style="width: 800px; height: 250px;">
+
+<body>
+    <h2>Bienvenue sur la page d'accueil</h2>
+    
+    <!-- Lien pour accéder au formulaire d'ajout d'ami -->
+    <a th:href="@{/ajouterAmi}">Ajouter un ami</a>
+    
+    <!-- Lien pour accéder au formulaire de dépôt -->
+    <a th:href="@{/effectuerDepot}">Effectuer un dépôt</a>
+    
+    <!-- Lien pour accéder au formulaire de retrait -->
+    <a th:href="@{/effectuerRetrait}">Effectuer un retrait</a>
+    
+       <!-- Lien pour accéder au formulaire de virement -->
+    <a th:href="@{/effectuerVirement}">Effectuer un virement</a>
+     
+     <!-- Lien pour accéder à l'historique des opérations -->
+    <a th:href="@{/historiqueOperations}">Voir l'historique des opérations</a>
+
+    <br><br>
+    
+    <!-- Formulaire de déconnexion -->
+    <form action="/logout" method="post">
+        <button type="submit">Déconnexion</button>
+    </form>
+</body>
+
+</html>
