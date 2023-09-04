@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Transfert;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
@@ -15,6 +16,8 @@ public class TransfertService {
  
 	@Autowired
 	private TransfertRepository transfertRepository;
+	 @Autowired
+		private UtilisateurService utilisateurService;
 	
 	public Iterable<Transfert> getTransferts() {
 		return transfertRepository.findAll();
@@ -32,7 +35,8 @@ public class TransfertService {
 		transfertRepository.deleteById(id);
 	}
 	
-	public List<Transfert> getVirementsByUtilisateurEmetteur(Utilisateur utilisateurEmetteur) {
+	public List<Transfert> getVirementsByUtilisateurEmetteur(UtilisateurDTO utilisateurEmetteurDTO) {
+		Utilisateur utilisateurEmetteur=utilisateurService.findByAdresseEmail(utilisateurEmetteurDTO.getAdresseEmail());		
         return transfertRepository.findByUtilisateurEmetteur(utilisateurEmetteur);
     }
 
