@@ -61,27 +61,51 @@ public class UtilisateurController {
 		return "ajouter-ami";
 	}
 
+	
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
 	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 	    Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-		Utilisateur ami = utilisateurService.findByAdresseEmail(adresseEmailAmi);
-		if (ami != null) {
-			if (!utilisateurActuel.getAmis().contains(ami)) {
-				utilisateurService.ajouterAmi(utilisateurActuel, ami);
-				model.addAttribute("success", "Ami ajouté avec succès.");
-			} else {
-				model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
-			}
-		} else {
-			model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
-		}
+	    Utilisateur ami = utilisateurService.findByAdresseEmail(adresseEmailAmi);
 
-		return "ajouter-ami";
+	    if (ami != null) {
+	        if (!utilisateurActuel.getAmis().contains(ami)) {
+	            utilisateurService.ajouterAmi(utilisateurActuel, ami);
+	            model.addAttribute("success", "Ami ajouté avec succès.");
+	        } else {
+	            model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
+	        }
+	    } else {
+	        model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
+	    }
+
+	    return "ajouter-ami";
 	}
+
+	/*
+	@PostMapping("/ajouterAmi")
+	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
+	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+	    UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmail(userDetails.getUsername());
+	    UtilisateurDTO amiDTO = utilisateurService.findByAdresseEmail(adresseEmailAmi);
+
+	    if (amiDTO != null) {
+	        if (!utilisateurActuelDTO.getAmis().contains(amiDTO)) {
+	            utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
+	            model.addAttribute("success", "Ami ajouté avec succès.");
+	        } else {
+	            model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
+	        }
+	    } else {
+	        model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
+	    }
+
+	    return "ajouter-ami";
+	}
+
+	*/
 	
-	
-	
+
 	@GetMapping("/effectuerDepot")
     public String showEffectuerDepotForm() {
         return "effectuerDepot";
@@ -128,12 +152,6 @@ public class UtilisateurController {
         return "effectuerRetrait";
     }
     
-   /* 
-    @GetMapping("/effectuerVirement")
-    public String showEffectuerVirementForm() {
-        return "effectuerVirement";
-    }
-*/
 	
 	@GetMapping("/effectuerVirement")
 	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
@@ -173,17 +191,6 @@ public class UtilisateurController {
         return "effectuerVirement";
     }
 
-
-	  @GetMapping("/login")
-	  public String login() {
-	    return "login";
-	  }
-	  
-	  @GetMapping("/home")
-	  public String home() {
-	    return "home";
-	  }
-	  
 	  @GetMapping("/historiqueOperations")
 	  public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
 	      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -199,6 +206,16 @@ public class UtilisateurController {
 	      }
 
 	      return "historique-operations";
+	  }
+
+	  @GetMapping("/login")
+	  public String login() {
+	    return "login";
+	  }
+	  
+	  @GetMapping("/home")
+	  public String home() {
+	    return "home";
 	  }
 }
 
