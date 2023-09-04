@@ -60,37 +60,15 @@ public class UtilisateurController {
 	public String showAjouterAmiForm() {
 		return "ajouter-ami";
 	}
-
 	
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
 	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	    Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-	    Utilisateur ami = utilisateurService.findByAdresseEmail(adresseEmailAmi);
-
-	    if (ami != null) {
-	        if (!utilisateurActuel.getAmis().contains(ami)) {
-	            utilisateurService.ajouterAmi(utilisateurActuel, ami);
-	            model.addAttribute("success", "Ami ajouté avec succès.");
-	        } else {
-	            model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
-	        }
-	    } else {
-	        model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
-	    }
-
-	    return "ajouter-ami";
-	}
-
-	/*
-	@PostMapping("/ajouterAmi")
-	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
-	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	    UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-	    UtilisateurDTO amiDTO = utilisateurService.findByAdresseEmail(adresseEmailAmi);
-
+	    UtilisateurDTO utilisateurActuelDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+	    UtilisateurDTO amiDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailAmi));
 	    if (amiDTO != null) {
-	        if (!utilisateurActuelDTO.getAmis().contains(amiDTO)) {
+	        if (!utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis()
+	        		.contains(utilisateurService.findByAdresseEmail(adresseEmailAmi))) {
 	            utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
 	            model.addAttribute("success", "Ami ajouté avec succès.");
 	        } else {
@@ -103,21 +81,18 @@ public class UtilisateurController {
 	    return "ajouter-ami";
 	}
 
-	*/
-	
-
 	@GetMapping("/effectuerDepot")
     public String showEffectuerDepotForm() {
         return "effectuerDepot";
     }
-
+	 
     @PostMapping("/effectuerDepot")
     public String effectuerDepot(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
+        UtilisateurDTO utilisateurActuelDTO =utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
         
-        if (utilisateurActuel != null) {
-            utilisateurService.effectuerDepot(utilisateurActuel, montant);
+        if (utilisateurActuelDTO != null) {
+            utilisateurService.effectuerDepot(utilisateurActuelDTO, montant);
             model.addAttribute("success", "Dépôt effectué avec succès.");
         } else {
             model.addAttribute("error", "Utilisateur introuvable.");
@@ -131,15 +106,15 @@ public class UtilisateurController {
         return "effectuerRetrait";
     }
 
-    
+   
     @PostMapping("/effectuerRetrait")
     public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
+        UtilisateurDTO utilisateurActuelDTO =utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
 
-        if (utilisateurActuel != null) {
+        if (utilisateurActuelDTO != null) {
             try {
-                utilisateurService.effectuerRetrait(utilisateurActuel, montant);
+                utilisateurService.effectuerRetrait(utilisateurActuelDTO, montant);
                 model.addAttribute("success", "Retrait effectué avec succès.");
             } catch (InsufficientBalanceException e) {
                 model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
@@ -152,7 +127,7 @@ public class UtilisateurController {
         return "effectuerRetrait";
     }
     
-	
+   
 	@GetMapping("/effectuerVirement")
 	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
 	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -166,7 +141,8 @@ public class UtilisateurController {
 	    return "effectuerVirement";
 	}
     
-    @PostMapping("/effectuerVirement")
+	
+	@PostMapping("/effectuerVirement")
     public String effectuerVirement(
         @RequestParam String adresseEmailBeneficiaire,
         @RequestParam BigDecimal montant,
@@ -207,6 +183,7 @@ public class UtilisateurController {
 
 	      return "historique-operations";
 	  }
+	  
 
 	  @GetMapping("/login")
 	  public String login() {
