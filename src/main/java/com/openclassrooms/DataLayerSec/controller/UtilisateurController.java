@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Transfert;
@@ -25,7 +24,7 @@ import com.openclassrooms.DataLayerSec.service.UtilisateurService.InsufficientBa
 
 @Controller
 public class UtilisateurController {
-	private final UtilisateurService utilisateurService;
+	private UtilisateurService utilisateurService;
 	
 	@Autowired
 	private  OperationService operationService;
@@ -39,58 +38,16 @@ public class UtilisateurController {
 		this.utilisateurService = utilisateurService;
 	}
 
-	/*
-	@ModelAttribute("utilisateur")
-	public Utilisateur getDefaultUtilisateur() {
-	    return new Utilisateur();
-	}
-
-	@GetMapping("/enregistrerUtilisateur")
-	public String showEnregistrerUtilisateurForm() {
-	    return "enregistrer-utilisateur";
-	}
-	
-	@PostMapping("/enregistrerUtilisateur")
-	public String enregistrerUtilisateur(@ModelAttribute Utilisateur utilisateur, ModelMap model) {
-	    try {
-	        utilisateurService.addUtilisateur(utilisateur);
-	        model.addAttribute("success", "L'utilisateur a été enregistré avec succès.");
-	    } catch (EmailExistsException e) {
-	        model.addAttribute("error", "Cet email existe déjà.");
-	    }
-	    return "enregistrer-utilisateur";
-	}
-
-
-	@GetMapping("/enregistrerUtilisateur")
-	public String showEnregistrerUtilisateurForm(ModelMap model) {
-	    model.addAttribute("utilisateurDTO", new UtilisateurDTO()); 
-	    return "enregistrer-utilisateur";
-	}
-	*/
-	
-
-	/*
-	@PostMapping("/enregistrerUtilisateur")
-	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO, ModelMap model) {
-	    try {
-	        utilisateurService.addUtilisateur(utilisateurService.convertToEntity(utilisateurDTO)); 
-	        model.addAttribute("success", "L'utilisateur a été enregistré avec succès.");
-	    } catch (EmailExistsException e) {
-	        model.addAttribute("error", "Cet email existe déjà.");
-	    }
-	    return "enregistrer-utilisateur";
-	}
-*/
 	@GetMapping("/enregistrerUtilisateur")
 	public String showEnregistrerUtilisateurForm(@ModelAttribute("utilisateurDTO") UtilisateurDTO utilisateurDTO) {
 	    return "enregistrer-utilisateur";
 	}
 	
+	
 	@PostMapping("/enregistrerUtilisateur")
 	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO, RedirectAttributes redirectAttributes) {
 	    try {
-	        utilisateurService.addUtilisateur(utilisateurService.convertToEntity(utilisateurDTO));
+	        utilisateurService.addUtilisateur(utilisateurDTO);
 	        redirectAttributes.addFlashAttribute("success", "L'utilisateur a été enregistré avec succès.");
 	    } catch (EmailExistsException e) {
 	        redirectAttributes.addFlashAttribute("error", "Cet email existe déjà.");
@@ -171,12 +128,26 @@ public class UtilisateurController {
         return "effectuerRetrait";
     }
     
-    
+   /* 
     @GetMapping("/effectuerVirement")
     public String showEffectuerVirementForm() {
         return "effectuerVirement";
     }
-
+*/
+	
+	@GetMapping("/effectuerVirement")
+	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
+	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+	    Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
+	    
+	    // Chargez la liste des amis de l'utilisateur authentifié
+	    List<Utilisateur> amis = utilisateurActuel.getAmis();
+	    
+	    model.addAttribute("amis", amis);
+	    
+	    return "effectuerVirement";
+	}
+    
     @PostMapping("/effectuerVirement")
     public String effectuerVirement(
         @RequestParam String adresseEmailBeneficiaire,
