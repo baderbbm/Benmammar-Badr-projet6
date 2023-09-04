@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.model.NatureOperation;
 import com.openclassrooms.DataLayerSec.model.Operation;
@@ -76,14 +75,32 @@ public class UtilisateurService {
 	        return utilisateurRepository.findByNameJPQL(nom);
 	    }
 	 
+	 /*
+	 public UtilisateurDTO findByAdresseEmail(String adresseEmail) {
+	        return convertToDTO(utilisateurRepository.findByAdresseEmail(adresseEmail));
+	    }
+	 */
+	 
 	 public Utilisateur findByAdresseEmail(String adresseEmail) {
 	        return utilisateurRepository.findByAdresseEmail(adresseEmail);
 	    }
+	 
 
-	    public void ajouterAmi(Utilisateur utilisateur, Utilisateur ami) {
-	        utilisateur.getAmis().add(ami);
-	        utilisateurRepository.save(utilisateur);
-	    }
+	 /*
+	 public void ajouterAmi(UtilisateurDTO utilisateurDTO, UtilisateurDTO amiDTO) {
+		    Utilisateur utilisateur = convertToEntity(utilisateurDTO);
+		    Utilisateur ami = convertToEntity(amiDTO);
+		    utilisateur.getAmis().add(ami);
+		    utilisateurRepository.save(utilisateur);
+		}
+	 
+	 */
+
+	 public void ajouterAmi(Utilisateur utilisateur, Utilisateur ami) {
+		    utilisateur.getAmis().add(ami);
+		    utilisateurRepository.save(utilisateur);
+		}
+
 	    
 	    public void effectuerDepot(Utilisateur utilisateur, BigDecimal montant) {
 	        BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
@@ -134,16 +151,21 @@ public class UtilisateurService {
 	    }
 	    
 	    public UtilisateurDTO convertToDTO(Utilisateur utilisateur) {
+	        if (utilisateur == null) {
+	            return null;
+	        }      
 	        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
 	        utilisateurDTO.setPrenom(utilisateur.getPrenom());
 	        utilisateurDTO.setNom(utilisateur.getNom());
 	        utilisateurDTO.setMotDePasse(utilisateur.getMotDePasse());
 	        utilisateurDTO.setAdresseEmail(utilisateur.getAdresseEmail());
 	        utilisateurDTO.setSoldeDuCompte(utilisateur.getSoldeDuCompte());
+	        
 	        return utilisateurDTO;
 	    }
+
 	    
-	    public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant) {
+	   public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant) {
 	        BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
 	        Utilisateur emetteur = findByAdresseEmail(adresseEmailEmetteur);
 	        Utilisateur beneficiaire = findByAdresseEmail(adresseEmailBeneficiaire);
