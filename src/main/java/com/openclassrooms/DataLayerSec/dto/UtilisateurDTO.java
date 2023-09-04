@@ -1,6 +1,9 @@
 package com.openclassrooms.DataLayerSec.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class UtilisateurDTO {
 
@@ -9,6 +12,15 @@ public class UtilisateurDTO {
     private String motDePasse;
     private String adresseEmail;
     private BigDecimal soldeDuCompte;
+	private List<UtilisateurDTO> amis = new ArrayList<>();
+
+	public List<UtilisateurDTO> getAmis() {
+		return amis;
+	}
+
+	public void setAmis(List<UtilisateurDTO> amis) {
+		this.amis = amis;
+	}
 
     public String getPrenom() {
         return prenom;
