@@ -6,13 +6,22 @@ import java.util.List;
 
 
 public class UtilisateurDTO {
-
-    private String prenom;
+	
+	private int utilisateurId;
+	private String prenom;
     private String nom;
     private String motDePasse;
     private String adresseEmail;
     private BigDecimal soldeDuCompte;
 	private List<UtilisateurDTO> amis = new ArrayList<>();
+	
+    public int getUtilisateurId() {
+		return utilisateurId;
+	}
+
+	public void setUtilisateurId(int utilisateurId) {
+		this.utilisateurId = utilisateurId;
+	}
 
 	public List<UtilisateurDTO> getAmis() {
 		return amis;
