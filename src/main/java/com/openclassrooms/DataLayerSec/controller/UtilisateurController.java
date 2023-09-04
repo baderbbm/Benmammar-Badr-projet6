@@ -25,13 +25,12 @@ import com.openclassrooms.DataLayerSec.service.UtilisateurService.InsufficientBa
 @Controller
 public class UtilisateurController {
 	private UtilisateurService utilisateurService;
-	
+
 	@Autowired
-	private  OperationService operationService;
-	
-	
+	private OperationService operationService;
+
 	@Autowired
-	private  TransfertService transfertService;
+	private TransfertService transfertService;
 
 	@Autowired
 	public UtilisateurController(UtilisateurService utilisateurService) {
@@ -40,159 +39,149 @@ public class UtilisateurController {
 
 	@GetMapping("/enregistrerUtilisateur")
 	public String showEnregistrerUtilisateurForm(@ModelAttribute("utilisateurDTO") UtilisateurDTO utilisateurDTO) {
-	    return "enregistrer-utilisateur";
-	}
-	
-	
-	@PostMapping("/enregistrerUtilisateur")
-	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO, RedirectAttributes redirectAttributes) {
-	    try {
-	        utilisateurService.addUtilisateur(utilisateurDTO);
-	        redirectAttributes.addFlashAttribute("success", "L'utilisateur a été enregistré avec succès.");
-	    } catch (EmailExistsException e) {
-	        redirectAttributes.addFlashAttribute("error", "Cet email existe déjà.");
-	    }
-	    return "redirect:/enregistrerUtilisateur";
+		return "enregistrer-utilisateur";
 	}
 
-	
+	@PostMapping("/enregistrerUtilisateur")
+	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO,
+			RedirectAttributes redirectAttributes) {
+		try {
+			utilisateurService.addUtilisateur(utilisateurDTO);
+			redirectAttributes.addFlashAttribute("success", "L'utilisateur a été enregistré avec succès.");
+		} catch (EmailExistsException e) {
+			redirectAttributes.addFlashAttribute("error", "Cet email existe déjà.");
+		}
+		return "redirect:/enregistrerUtilisateur";
+	}
+
 	@GetMapping("/ajouterAmi")
 	public String showAjouterAmiForm() {
 		return "ajouter-ami";
 	}
-	
+
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
-	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	    UtilisateurDTO utilisateurActuelDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-	    UtilisateurDTO amiDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailAmi));
-	    if (amiDTO != null) {
-	        if (!utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis()
-	        		.contains(utilisateurService.findByAdresseEmail(adresseEmailAmi))) {
-	            utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
-	            model.addAttribute("success", "Ami ajouté avec succès.");
-	        } else {
-	            model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
-	        }
-	    } else {
-	        model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
-	    }
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService
+				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+		UtilisateurDTO amiDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailAmi));
+		if (amiDTO != null) {
+			if (!utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis()
+					.contains(utilisateurService.findByAdresseEmail(adresseEmailAmi))) {
+				utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
+				model.addAttribute("success", "Ami ajouté avec succès.");
+			} else {
+				model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
+			}
+		} else {
+			model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
+		}
 
-	    return "ajouter-ami";
+		return "ajouter-ami";
 	}
 
 	@GetMapping("/effectuerDepot")
-    public String showEffectuerDepotForm() {
-        return "effectuerDepot";
-    }
-	 
-    @PostMapping("/effectuerDepot")
-    public String effectuerDepot(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        UtilisateurDTO utilisateurActuelDTO =utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-        
-        if (utilisateurActuelDTO != null) {
-            utilisateurService.effectuerDepot(utilisateurActuelDTO, montant);
-            model.addAttribute("success", "Dépôt effectué avec succès.");
-        } else {
-            model.addAttribute("error", "Utilisateur introuvable.");
-        }
+	public String showEffectuerDepotForm() {
+		return "effectuerDepot";
+	}
 
-        return "effectuerDepot";
-    }
-	    
-    @GetMapping("/effectuerRetrait")
-    public String showEffectuerRetraitForm() {
-        return "effectuerRetrait";
-    }
+	@PostMapping("/effectuerDepot")
+	public String effectuerDepot(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService
+				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
 
-   
-    @PostMapping("/effectuerRetrait")
-    public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        UtilisateurDTO utilisateurActuelDTO =utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+		if (utilisateurActuelDTO != null) {
+			utilisateurService.effectuerDepot(utilisateurActuelDTO, montant);
+			model.addAttribute("success", "Dépôt effectué avec succès.");
+		} else {
+			model.addAttribute("error", "Utilisateur introuvable.");
+		}
 
-        if (utilisateurActuelDTO != null) {
-            try {
-                utilisateurService.effectuerRetrait(utilisateurActuelDTO, montant);
-                model.addAttribute("success", "Retrait effectué avec succès.");
-            } catch (InsufficientBalanceException e) {
-                model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
-            }
-        } else {
-            model.addAttribute("error", "Utilisateur introuvable.");
-        }
+		return "effectuerDepot";
+	}
 
-        // Réutiliser la même vue pour afficher les messages
-        return "effectuerRetrait";
-    }
-    
-   
+	@GetMapping("/effectuerRetrait")
+	public String showEffectuerRetraitForm() {
+		return "effectuerRetrait";
+	}
+
+	@PostMapping("/effectuerRetrait")
+	public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService
+				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+
+		if (utilisateurActuelDTO != null) {
+			try {
+				utilisateurService.effectuerRetrait(utilisateurActuelDTO, montant);
+				model.addAttribute("success", "Retrait effectué avec succès.");
+			} catch (InsufficientBalanceException e) {
+				model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
+			}
+		} else {
+			model.addAttribute("error", "Utilisateur introuvable.");
+		}
+
+		// Réutiliser la même vue pour afficher les messages
+		return "effectuerRetrait";
+	}
+
 	@GetMapping("/effectuerVirement")
 	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
-	    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	    Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-	    
-	    // Chargez la liste des amis de l'utilisateur authentifié
-	    List<Utilisateur> amis = utilisateurActuel.getAmis();
-	    
-	    model.addAttribute("amis", amis);
-	    
-	    return "effectuerVirement";
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		model.addAttribute("amis", utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis());
+		return "effectuerVirement";
 	}
-    
-	
+
 	@PostMapping("/effectuerVirement")
-    public String effectuerVirement(
-        @RequestParam String adresseEmailBeneficiaire,
-        @RequestParam BigDecimal montant,
-        ModelMap model,
-        Authentication authentication
-    ) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-        Utilisateur beneficiaire = utilisateurService.findByAdresseEmail(adresseEmailBeneficiaire);
+	public String effectuerVirement(@RequestParam String adresseEmailBeneficiaire, @RequestParam BigDecimal montant,
+			ModelMap model, Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService
+				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+		UtilisateurDTO beneficiaireDTO = utilisateurService
+				.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailBeneficiaire));
 
-        if (beneficiaire != null) {
-            try {
-                utilisateurService.effectuerVirement(utilisateurActuel.getAdresseEmail(), beneficiaire.getAdresseEmail(), montant);
-                model.addAttribute("success", "Virement effectué avec succès.");
-            } catch (InsufficientBalanceException e) {
-                model.addAttribute("error", "Solde insuffisant pour effectuer le virement.");
-            }
-        } else {
-            model.addAttribute("error", "Bénéficiaire introuvable.");
-        }
+		if (beneficiaireDTO != null) {
+			try {
+				utilisateurService.effectuerVirement(utilisateurActuelDTO.getAdresseEmail(),
+						beneficiaireDTO.getAdresseEmail(), montant);
+				model.addAttribute("success", "Virement effectué avec succès.");
+			} catch (InsufficientBalanceException e) {
+				model.addAttribute("error", "Solde insuffisant pour effectuer le virement.");
+			}
+		} else {
+			model.addAttribute("error", "Bénéficiaire introuvable.");
+		}
 
-        return "effectuerVirement";
-    }
+		return "effectuerVirement";
+	}
 
-	  @GetMapping("/historiqueOperations")
-	  public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
-	      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	      Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
+	@GetMapping("/historiqueOperations")
+	public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
 
-	      if (utilisateurActuel != null) {
-	          List<Operation> operations = operationService.findByUtilisateur(utilisateurActuel);
-	          List<Transfert> transferts = transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuel);
-	          model.addAttribute("operations", operations);
-	          model.addAttribute("transferts", transferts);
-	      } else {
-	          model.addAttribute("error", "Utilisateur introuvable.");
-	      }
+		if (utilisateurActuel != null) {
+			List<Operation> operations = operationService.findByUtilisateur(utilisateurActuel);
+			List<Transfert> transferts = transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuel);
+			model.addAttribute("operations", operations);
+			model.addAttribute("transferts", transferts);
+		} else {
+			model.addAttribute("error", "Utilisateur introuvable.");
+		}
 
-	      return "historique-operations";
-	  }
-	  
+		return "historique-operations";
+	}
 
-	  @GetMapping("/login")
-	  public String login() {
-	    return "login";
-	  }
-	  
-	  @GetMapping("/home")
-	  public String home() {
-	    return "home";
-	  }
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+
+	@GetMapping("/home")
+	public String home() {
+		return "home";
+	}
 }
-
