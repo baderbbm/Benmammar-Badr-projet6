@@ -50,11 +50,11 @@ public class UtilisateurService {
 	}
 
 	
-	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
+	public UtilisateurDTO addUtilisateur(UtilisateurDTO utilisateurDTO) {
 	    try {
-	        String encryptedPassword = passwordEncoder.encode(utilisateur.getMotDePasse());
-	        utilisateur.setMotDePasse(encryptedPassword);
-	        return utilisateurRepository.save(utilisateur);
+	        String encryptedPassword = passwordEncoder.encode(utilisateurDTO.getMotDePasse());
+	        utilisateurDTO.setMotDePasse(encryptedPassword);
+	        return convertToDTO(utilisateurRepository.save(convertToEntity(utilisateurDTO)));
 	    } catch (DataIntegrityViolationException ex) {
 	        throw new EmailExistsException("L'email existe déjà.");
 	    }
