@@ -4,18 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class UtilisateurDTO {
-	
+
 	private int utilisateurId;
 	private String prenom;
-    private String nom;
-    private String motDePasse;
-    private String adresseEmail;
-    private BigDecimal soldeDuCompte;
+	private String nom;
+	private String motDePasse;
+	private String adresseEmail;
+	private BigDecimal soldeDuCompte;
 	private List<UtilisateurDTO> amis = new ArrayList<>();
-	
-    public int getUtilisateurId() {
+
+	public int getUtilisateurId() {
 		return utilisateurId;
 	}
 
@@ -31,43 +30,43 @@ public class UtilisateurDTO {
 		this.amis = amis;
 	}
 
-    public String getPrenom() {
-        return prenom;
-    }
+	public String getPrenom() {
+		return prenom;
+	}
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
 
-    public String getNom() {
-        return nom;
-    }
+	public String getNom() {
+		return nom;
+	}
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-    public String getMotDePasse() {
-        return motDePasse;
-    }
+	public String getMotDePasse() {
+		return motDePasse;
+	}
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
+	public void setMotDePasse(String motDePasse) {
+		this.motDePasse = motDePasse;
+	}
 
-    public String getAdresseEmail() {
-        return adresseEmail;
-    }
+	public String getAdresseEmail() {
+		return adresseEmail;
+	}
 
-    public void setAdresseEmail(String adresseEmail) {
-        this.adresseEmail = adresseEmail;
-    }
+	public void setAdresseEmail(String adresseEmail) {
+		this.adresseEmail = adresseEmail;
+	}
 
-    public BigDecimal getSoldeDuCompte() {
-        return soldeDuCompte;
-    }
+	public BigDecimal getSoldeDuCompte() {
+		return soldeDuCompte;
+	}
 
-    public void setSoldeDuCompte(BigDecimal soldeDuCompte) {
-        this.soldeDuCompte = soldeDuCompte;
-    }
+	public void setSoldeDuCompte(BigDecimal soldeDuCompte) {
+		this.soldeDuCompte = soldeDuCompte;
+	}
 }
