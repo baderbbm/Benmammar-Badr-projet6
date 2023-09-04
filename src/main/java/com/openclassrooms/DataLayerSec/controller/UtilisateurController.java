@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
-import com.openclassrooms.DataLayerSec.model.Operation;
-import com.openclassrooms.DataLayerSec.model.Transfert;
-import java.util.List;
-import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.service.OperationService;
 import com.openclassrooms.DataLayerSec.service.TransfertService;
 import com.openclassrooms.DataLayerSec.service.UtilisateurService;
@@ -161,13 +157,12 @@ public class UtilisateurController {
 	@GetMapping("/historiqueOperations")
 	public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		Utilisateur utilisateurActuel = utilisateurService.findByAdresseEmail(userDetails.getUsername());
-
-		if (utilisateurActuel != null) {
-			List<Operation> operations = operationService.findByUtilisateur(utilisateurActuel);
-			List<Transfert> transferts = transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuel);
-			model.addAttribute("operations", operations);
-			model.addAttribute("transferts", transferts);
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
+		if (utilisateurActuelDTO != null) {
+		//	List<Operation> operations = operationService.findByUtilisateur(utilisateurActuelDTO);
+			//List<Transfert> transferts = transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuelDTO);
+			model.addAttribute("operations",operationService.findByUtilisateur(utilisateurActuelDTO));
+			model.addAttribute("transferts", transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuelDTO));
 		} else {
 			model.addAttribute("error", "Utilisateur introuvable.");
 		}
