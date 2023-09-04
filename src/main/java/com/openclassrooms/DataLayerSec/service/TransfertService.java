@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
-import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Transfert;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.TransfertRepository;
