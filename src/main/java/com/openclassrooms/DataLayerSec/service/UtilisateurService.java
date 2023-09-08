@@ -2,12 +2,16 @@ package com.openclassrooms.DataLayerSec.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
+import com.openclassrooms.DataLayerSec.exceptions.EmailExistsException;
+import com.openclassrooms.DataLayerSec.exceptions.InsufficientBalanceException;
 import com.openclassrooms.DataLayerSec.model.NatureOperation;
 import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Transfert;
@@ -40,12 +44,6 @@ public class UtilisateurService {
 		// return utilisateurRepository.findByUtilisateurId(id);
 	}
 
-	// exception personnalisée
-	public class EmailExistsException extends RuntimeException {
-		public EmailExistsException(String message) {
-			super(message);
-		}
-	}
 
 	public UtilisateurDTO addUtilisateur(UtilisateurDTO utilisateurDTO) {
 		try {
@@ -73,28 +71,27 @@ public class UtilisateurService {
 		return utilisateurRepository.findByNameJPQL(nom);
 	}
 
-	/*
-	 * public UtilisateurDTO findByAdresseEmail(String adresseEmail) { return
-	 * convertToDTO(utilisateurRepository.findByAdresseEmail(adresseEmail)); }
-	 * 
-	 */
+	
+	  public UtilisateurDTO findByAdresseEmailDTO(String adresseEmail) { 
+		  return convertToDTO(findByAdresseEmail(adresseEmail)); 
+		  }
+	  
+	 
 	public Utilisateur findByAdresseEmail(String adresseEmail) {
 		return utilisateurRepository.findByAdresseEmail(adresseEmail);
 	}
 
-	public void ajouterAmi(UtilisateurDTO utilisateurDTO, UtilisateurDTO amiDTO) {
+	public void ajouterAmi(UtilisateurDTO utilisateurDTO, UtilisateurDTO amiDTO) throws Exception {
+		if (amiDTO==null) throw new Exception ("Aucun utilisateur trouvé avec cette adresse e-mail.");
 		Utilisateur utilisateur = findByAdresseEmail(utilisateurDTO.getAdresseEmail());
 		Utilisateur ami = findByAdresseEmail(amiDTO.getAdresseEmail());
+		if (utilisateur.getAmis().contains(ami)) throw new Exception ("Cet utilisateur est déjà dans votre liste d'amis.");
 		utilisateur.getAmis().add(ami);
-		utilisateurRepository.save(utilisateur);
+		utilisateurRepository.save(utilisateur);	
 	}
 
-	/*
-	 * public void ajouterAmi(Utilisateur utilisateur, Utilisateur ami) {
-	 * utilisateur.getAmis().add(ami); utilisateurRepository.save(utilisateur); }
-	 * 
-	 */
-	public void effectuerDepot(UtilisateurDTO utilisateurDTO, BigDecimal montant) {
+	public void effectuerDepot(UtilisateurDTO utilisateurDTO, BigDecimal montant) throws Exception {
+		if (utilisateurDTO==null) throw new Exception ("Utilisateur introuvable.");
 		BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
 		Utilisateur utilisateur=findByAdresseEmail(utilisateurDTO.getAdresseEmail());
 		utilisateur.effectuerDepot(montantAvecPrelevement);
@@ -107,14 +104,8 @@ public class UtilisateurService {
 		operationRepository.save(operation);
 	}
 
-	// exception personnalisée
-	public class InsufficientBalanceException extends RuntimeException {
-		public InsufficientBalanceException(String message) {
-			super(message);
-		}
-	}
-
-	public void effectuerRetrait(UtilisateurDTO utilisateurDTO, BigDecimal montant) {
+	public void effectuerRetrait(UtilisateurDTO utilisateurDTO, BigDecimal montant) throws Exception {
+		if (utilisateurDTO==null) throw new Exception ("Utilisateur introuvable.");
 		BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
 		Utilisateur utilisateur=findByAdresseEmail(utilisateurDTO.getAdresseEmail());		
 		if (utilisateur.getSoldeDuCompte().compareTo(montant) >= 0) {
@@ -188,6 +179,14 @@ public class UtilisateurService {
 	            throw new IllegalArgumentException("Utilisateurs introuvables.");
 	        }
 	    }
+	 
+		public List<UtilisateurDTO> getAmis(String emailAddress) {
+			List<UtilisateurDTO> amis = new ArrayList<>();
+			for (Utilisateur ami : findByAdresseEmail(emailAddress).getAmis()) {
+				amis.add(convertToDTO(ami));
+			}
+			return amis;
+		}
 
 
 }
