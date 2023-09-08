@@ -166,5 +166,24 @@ public class UtilisateurServiceTest {
         assertEquals("ami1@example.com", amisDTO.get(0).getAdresseEmail());
         assertEquals("ami2@example.com", amisDTO.get(1).getAdresseEmail());
     }
+	
+	@Test
+    public void testEffectuerVirement() throws Exception {
+        String adresseEmailEmetteur = "emetteur@example.com";
+        String adresseEmailBeneficiaire = "beneficiaire@example.com";
+        BigDecimal montant = BigDecimal.valueOf(100.0);
+        Utilisateur emetteurSimule = new Utilisateur();
+        emetteurSimule.setSoldeDuCompte(BigDecimal.valueOf(200.0));
+        Utilisateur beneficiaireSimule = new Utilisateur();
+        beneficiaireSimule.setSoldeDuCompte(BigDecimal.valueOf(50.0));
+        when(utilisateurRepository.findByAdresseEmail(adresseEmailEmetteur)).thenReturn(emetteurSimule);
+        when(utilisateurRepository.findByAdresseEmail(adresseEmailBeneficiaire)).thenReturn(beneficiaireSimule);
+        utilisateurService.effectuerVirement(adresseEmailEmetteur, adresseEmailBeneficiaire, montant);
+        assertEquals(BigDecimal.valueOf(100.0), emetteurSimule.getSoldeDuCompte());
+        assertTrue(Precision.equals(BigDecimal.valueOf(50.0 + 99.5).doubleValue(), 
+        		beneficiaireSimule.getSoldeDuCompte().doubleValue(), 0.001));       
+        verify(utilisateurRepository, times(2)).save(any());
+        verify(transfertRepository, times(1)).save(any());
+    }
 
 }
