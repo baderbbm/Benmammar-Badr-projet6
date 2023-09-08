@@ -107,7 +107,6 @@ public class UtilisateurController {
 		} catch (InsufficientBalanceException e) {
 			model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
 		}
-		// Réutiliser la même vue pour afficher les messages
 		return "effectuerRetrait";
 	}
 
