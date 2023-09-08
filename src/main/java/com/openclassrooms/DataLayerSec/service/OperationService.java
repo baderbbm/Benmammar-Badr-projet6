@@ -45,20 +45,21 @@ public class TransfertService {
         return convertToTransfertDTOList(getVirementsByUtilisateurEmetteur(utilisateurEmetteurDTO));
     }
 	
-    public static List<OperationDTO> convertToOperationDTOList(List<Operation> operations) {
-        List<OperationDTO> operationDTOList = new ArrayList<>();
-        for (Operation operation : operations) {
-            OperationDTO operationDTO = new OperationDTO();
-            operationDTO.setOperationId(operation.getOperationId());
-            UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
-            utilisateurDTO.setAdresseEmail(operation.getUtilisateur().getAdresseEmail());
-            operationDTO.setUtilisateur(utilisateurDTO);
-            operationDTO.setMontant(operation.getMontant());
-            operationDTO.setDateetheureoperation(operation.getDateetheureoperation());
-            operationDTO.setNatureoperation(operation.getNatureoperation());
-            operationDTOList.add(operationDTO);
-        }
-        return operationDTOList;
+public static List<OperationDTO> convertToOperationDTOList(List<Operation> operations) {
+    List<OperationDTO> operationDTOList = new ArrayList<>();
+
+    for (Operation operation : operations) {
+        OperationDTO operationDTO = new OperationDTO();
+        operationDTO.setOperationId(operation.getOperationId());
+         UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        operationDTO.setUtilisateur(utilisateurDTO); 
+        operationDTO.setMontant(operation.getMontant());
+        operationDTO.setDateetheureoperation(operation.getDateetheureoperation());
+        operationDTO.setNatureoperation(operation.getNatureoperation());
+        operationDTOList.add(operationDTO);
     }
+
+    return operationDTOList;
+}
 
 }
