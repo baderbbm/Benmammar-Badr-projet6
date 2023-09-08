@@ -45,23 +45,20 @@ public class TransfertService {
         return convertToTransfertDTOList(getVirementsByUtilisateurEmetteur(utilisateurEmetteurDTO));
     }
 	
-	public static List<TransfertDTO> convertToTransfertDTOList(List<Transfert> transferts) {
-        List<TransfertDTO> transfertDTOList = new ArrayList<>();
-
-        for (Transfert transfert : transferts) {
-            TransfertDTO transfertDTO = new TransfertDTO();
-            transfertDTO.setTransfertId(transfert.getTransfertId());
-            UtilisateurDTO emetteurDTO = new UtilisateurDTO();
-            transfertDTO.setUtilisateurEmetteurDTO(emetteurDTO); 
-            UtilisateurDTO beneficiaireDTO = new UtilisateurDTO();
-            beneficiaireDTO.setNom(transfert.getUtilisateurBeneficiaire().getNom());
-            transfertDTO.setUtilisateurBeneficiaireDTO(beneficiaireDTO); 
-            transfertDTO.setMontant(transfert.getMontant());
-            transfertDTO.setDateHeureTransfert(transfert.getDateHeureTransfert());
-            transfertDTOList.add(transfertDTO);
+    public static List<OperationDTO> convertToOperationDTOList(List<Operation> operations) {
+        List<OperationDTO> operationDTOList = new ArrayList<>();
+        for (Operation operation : operations) {
+            OperationDTO operationDTO = new OperationDTO();
+            operationDTO.setOperationId(operation.getOperationId());
+            UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+            utilisateurDTO.setAdresseEmail(operation.getUtilisateur().getAdresseEmail());
+            operationDTO.setUtilisateur(utilisateurDTO);
+            operationDTO.setMontant(operation.getMontant());
+            operationDTO.setDateetheureoperation(operation.getDateetheureoperation());
+            operationDTO.setNatureoperation(operation.getNatureoperation());
+            operationDTOList.add(operationDTO);
         }
-
-        return transfertDTOList;
+        return operationDTOList;
     }
 
 }
