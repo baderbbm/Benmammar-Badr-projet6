@@ -39,8 +39,8 @@
             <tr th:each="transfert : ${transferts}">
                 <td th:text="${transfert.dateHeureTransfert}"></td>
                 <td th:text="${transfert.montant}"></td>
-                <td th:text="${transfert.utilisateurBeneficiaire.nom}"></td>
-                 <td th:text="${transfert.utilisateurBeneficiaire.prenom}"></td>
+                <td th:text="${transfert.utilisateurBeneficiaireDTO.nom}"></td>
+                 <td th:text="${transfert.utilisateurBeneficiaireDTO.prenom}"></td>
             </tr>
         </tbody>
     </table>
