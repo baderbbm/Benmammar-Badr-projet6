@@ -114,7 +114,7 @@ public class UtilisateurController {
 	@GetMapping("/effectuerVirement")
 	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		model.addAttribute("amis", utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis());
+		model.addAttribute("amis", utilisateurService.getAmis(userDetails.getUsername()));
 		return "effectuerVirement";
 	}
 
