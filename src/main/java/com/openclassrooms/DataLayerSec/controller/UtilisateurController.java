@@ -1,6 +1,7 @@
 package com.openclassrooms.DataLayerSec.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
+import com.openclassrooms.DataLayerSec.dto.OperationDTO;
+import com.openclassrooms.DataLayerSec.dto.TransfertDTO;
+import com.openclassrooms.DataLayerSec.exceptions.EmailExistsException;
+import com.openclassrooms.DataLayerSec.exceptions.InsufficientBalanceException;
 import com.openclassrooms.DataLayerSec.service.OperationService;
 import com.openclassrooms.DataLayerSec.service.TransfertService;
 import com.openclassrooms.DataLayerSec.service.UtilisateurService;
-import com.openclassrooms.DataLayerSec.service.UtilisateurService.EmailExistsException;
-import com.openclassrooms.DataLayerSec.service.UtilisateurService.InsufficientBalanceException;
 
 @Controller
 public class UtilisateurController {
@@ -58,21 +61,15 @@ public class UtilisateurController {
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		UtilisateurDTO utilisateurActuelDTO = utilisateurService
-				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-		UtilisateurDTO amiDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailAmi));
-		if (amiDTO != null) {
-			if (!utilisateurService.findByAdresseEmail(userDetails.getUsername()).getAmis()
-					.contains(utilisateurService.findByAdresseEmail(adresseEmailAmi))) {
-				utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
-				model.addAttribute("success", "Ami ajouté avec succès.");
-			} else {
-				model.addAttribute("error", "Cet utilisateur est déjà dans votre liste d'amis.");
-			}
-		} else {
-			model.addAttribute("error", "Aucun utilisateur trouvé avec cette adresse e-mail.");
-		}
 
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
+		UtilisateurDTO amiDTO = utilisateurService.findByAdresseEmailDTO(adresseEmailAmi);
+		try {
+			utilisateurService.ajouterAmi(utilisateurActuelDTO, amiDTO);
+			model.addAttribute("success", "Ami ajouté avec succès.");
+		} catch (Exception e) {
+			model.addAttribute("error", e.getMessage());
+		}
 		return "ajouter-ami";
 	}
 
@@ -84,16 +81,13 @@ public class UtilisateurController {
 	@PostMapping("/effectuerDepot")
 	public String effectuerDepot(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		UtilisateurDTO utilisateurActuelDTO = utilisateurService
-				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-
-		if (utilisateurActuelDTO != null) {
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
+		try {
 			utilisateurService.effectuerDepot(utilisateurActuelDTO, montant);
 			model.addAttribute("success", "Dépôt effectué avec succès.");
-		} else {
-			model.addAttribute("error", "Utilisateur introuvable.");
+		} catch (Exception e) {
+			model.addAttribute("error", e.getMessage());
 		}
-
 		return "effectuerDepot";
 	}
 
@@ -103,22 +97,16 @@ public class UtilisateurController {
 	}
 
 	@PostMapping("/effectuerRetrait")
-	public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
+	public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication)
+			throws Exception {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		UtilisateurDTO utilisateurActuelDTO = utilisateurService
-				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-
-		if (utilisateurActuelDTO != null) {
-			try {
-				utilisateurService.effectuerRetrait(utilisateurActuelDTO, montant);
-				model.addAttribute("success", "Retrait effectué avec succès.");
-			} catch (InsufficientBalanceException e) {
-				model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
-			}
-		} else {
-			model.addAttribute("error", "Utilisateur introuvable.");
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
+		try {
+			utilisateurService.effectuerRetrait(utilisateurActuelDTO, montant);
+			model.addAttribute("success", "Retrait effectué avec succès.");
+		} catch (InsufficientBalanceException e) {
+			model.addAttribute("error", "Solde insuffisant pour effectuer le retrait.");
 		}
-
 		// Réutiliser la même vue pour afficher les messages
 		return "effectuerRetrait";
 	}
@@ -134,39 +122,26 @@ public class UtilisateurController {
 	public String effectuerVirement(@RequestParam String adresseEmailBeneficiaire, @RequestParam BigDecimal montant,
 			ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		UtilisateurDTO utilisateurActuelDTO = utilisateurService
-				.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-		UtilisateurDTO beneficiaireDTO = utilisateurService
-				.convertToDTO(utilisateurService.findByAdresseEmail(adresseEmailBeneficiaire));
-
-		if (beneficiaireDTO != null) {
-			try {
-				utilisateurService.effectuerVirement(utilisateurActuelDTO.getAdresseEmail(),
-						beneficiaireDTO.getAdresseEmail(), montant);
-				model.addAttribute("success", "Virement effectué avec succès.");
-			} catch (InsufficientBalanceException e) {
-				model.addAttribute("error", "Solde insuffisant pour effectuer le virement.");
-			}
-		} else {
-			model.addAttribute("error", "Bénéficiaire introuvable.");
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
+		UtilisateurDTO beneficiaireDTO = utilisateurService.findByAdresseEmailDTO(adresseEmailBeneficiaire);
+		try {
+			utilisateurService.effectuerVirement(utilisateurActuelDTO.getAdresseEmail(),
+					beneficiaireDTO.getAdresseEmail(), montant);
+			model.addAttribute("success", "Virement effectué avec succès.");
+		} catch (InsufficientBalanceException e) {
+			model.addAttribute("error", "Solde insuffisant pour effectuer le virement.");
 		}
-
 		return "effectuerVirement";
 	}
 
 	@GetMapping("/historiqueOperations")
 	public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		UtilisateurDTO utilisateurActuelDTO = utilisateurService.convertToDTO(utilisateurService.findByAdresseEmail(userDetails.getUsername()));
-		if (utilisateurActuelDTO != null) {
-		//	List<Operation> operations = operationService.findByUtilisateur(utilisateurActuelDTO);
-			//List<Transfert> transferts = transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuelDTO);
-			model.addAttribute("operations",operationService.findByUtilisateur(utilisateurActuelDTO));
-			model.addAttribute("transferts", transfertService.getVirementsByUtilisateurEmetteur(utilisateurActuelDTO));
-		} else {
-			model.addAttribute("error", "Utilisateur introuvable.");
-		}
-
+		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
+		List<OperationDTO> operations = operationService.findByUtilisateurDTO(utilisateurActuelDTO);
+		List<TransfertDTO> transferts =transfertService.getVirementsByUtilisateurEmetteurDTO(utilisateurActuelDTO);
+		model.addAttribute("operations", operations);
+		model.addAttribute("transferts", transferts);
 		return "historique-operations";
 	}
 
