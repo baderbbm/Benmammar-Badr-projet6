@@ -24,7 +24,7 @@ import com.openclassrooms.DataLayerSec.service.UtilisateurService;
 @Controller
 public class UtilisateurController {
 	private UtilisateurService utilisateurService;
-
+	
 	@Autowired
 	private OperationService operationService;
 
@@ -41,18 +41,18 @@ public class UtilisateurController {
 		return "enregistrer-utilisateur";
 	}
 
-	@PostMapping("/enregistrerUtilisateur")
+@PostMapping("/enregistrerUtilisateur")
 	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO,
 			RedirectAttributes redirectAttributes) {
 		try {
 			utilisateurService.addUtilisateur(utilisateurDTO);
 			redirectAttributes.addFlashAttribute("success", "L'utilisateur a été enregistré avec succès.");
 		} catch (EmailExistsException e) {
-			redirectAttributes.addFlashAttribute("error", "Cet email existe déjà.");
+			redirectAttributes.addFlashAttribute("error", e.getMessage());
 		}
 		return "redirect:/enregistrerUtilisateur";
 	}
-
+	
 	@GetMapping("/ajouterAmi")
 	public String showAjouterAmiForm() {
 		return "ajouter-ami";
