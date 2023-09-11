@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.UtilisateurRepository;
 
@@ -24,7 +23,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Utilisateur utilisateur = utilisateurRepository.findByAdresseEmail(email);
         if (utilisateur == null) {
             throw new UsernameNotFoundException("Utilisateur introuvable avec cet e-mail : " + email);
-        }        
-        return new CustomUserDetails(utilisateur);
+        }  
+        return new CustomUserDetails (utilisateur);
+          
     }
 }
