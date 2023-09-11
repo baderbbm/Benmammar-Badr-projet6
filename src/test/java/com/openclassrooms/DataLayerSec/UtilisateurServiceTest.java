@@ -1,20 +1,17 @@
 package com.openclassrooms.DataLayerSec;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.exceptions.EmailExistsException;
@@ -27,7 +24,6 @@ import com.openclassrooms.DataLayerSec.service.UtilisateurService;
 import org.apache.commons.math3.util.Precision;
 
 
-@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 public class UtilisateurServiceTest {
 	
@@ -52,6 +48,17 @@ public class UtilisateurServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
+	  @Test
+	    public void testFindByAdresseEmailDTO() {
+	        String adresseEmail = "test@example.com";
+	        Utilisateur utilisateur = new Utilisateur();
+	        utilisateur.setAdresseEmail(adresseEmail);
+	        when(utilisateurRepository.findByAdresseEmail(adresseEmail)).thenReturn(utilisateur);
+	        UtilisateurDTO utilisateurDTO = utilisateurService.findByAdresseEmailDTO(adresseEmail);
+	        assertThat(utilisateurDTO).isNotNull();
+	        assertThat(utilisateurDTO.getAdresseEmail()).isEqualTo(adresseEmail);
+	    }
+	
 	@Test
 	public void testAddUtilisateur() {
 		UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
@@ -71,6 +78,7 @@ public class UtilisateurServiceTest {
 		assertThat(savedUtilisateurDTO.getMotDePasse()).isEqualTo("hashedPassword");
 	}
 
+	
 	@Test
 	public void testAddUtilisateurWithExistingEmail() {
 		UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
@@ -84,7 +92,7 @@ public class UtilisateurServiceTest {
 			assertThat(e.getMessage()).isEqualTo("L'email existe déjà.");
 		}
 	}
-
+	
 	
 	@Test
     public void testEffectuerDepot() throws Exception {
@@ -100,9 +108,6 @@ public class UtilisateurServiceTest {
        utilisateurSimule.getSoldeDuCompte().doubleValue(), 0.001));
     }
 
-	
-
-	
 	  @Test public void testEffectuerRetraitWithSufficientBalance() throws Exception {
 	  UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
 	  utilisateurDTO.setAdresseEmail("test@example.com");
@@ -115,8 +120,6 @@ public class UtilisateurServiceTest {
 	 verify(utilisateurRepository, times(1)).save(any()); 
 	 }
 	 
-	 
-
 	@Test
 	public void testEffectuerRetraitWithInsufficientBalance() throws Exception {
 		UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
@@ -185,5 +188,4 @@ public class UtilisateurServiceTest {
         verify(utilisateurRepository, times(2)).save(any());
         verify(transfertRepository, times(1)).save(any());
     }
-
 }
