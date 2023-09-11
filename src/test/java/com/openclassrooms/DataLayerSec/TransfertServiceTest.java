@@ -2,13 +2,11 @@ package com.openclassrooms.DataLayerSec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -77,6 +75,26 @@ public class TransfertServiceTest {
         assertEquals(1, result.size());
         Transfert transfertResult = result.get(0);
         assertEquals(1, transfertResult.getTransfertId());
+    }
+    
+    @Test
+    public void testGetVirementsByUtilisateurEmetteurDTO() {
+        UtilisateurDTO utilisateurEmetteurDTO = new UtilisateurDTO();
+        utilisateurEmetteurDTO.setAdresseEmail("emetteur@example.com");
+        Utilisateur utilisateurEmetteurSimule = new Utilisateur();
+        utilisateurEmetteurSimule.setAdresseEmail("emetteur@example.com");
+        List<Transfert> transfertsSimules = new ArrayList<>();
+        Transfert transfert1 = new Transfert();
+        transfert1.setTransfertId(1);
+        transfertsSimules.add(transfert1);
+        when(utilisateurService.findByAdresseEmail(utilisateurEmetteurDTO.getAdresseEmail()))
+                .thenReturn(utilisateurEmetteurSimule);
+        when(transfertRepository.findByUtilisateurEmetteur(utilisateurEmetteurSimule))
+                .thenReturn(transfertsSimules);
+        List<TransfertDTO> result = transfertService.getVirementsByUtilisateurEmetteurDTO(utilisateurEmetteurDTO);
+        assertEquals(1, result.size());
+        TransfertDTO transfertDTO = result.get(0);
+        assertEquals(1, transfertDTO.getTransfertId());
     }
 }
 
