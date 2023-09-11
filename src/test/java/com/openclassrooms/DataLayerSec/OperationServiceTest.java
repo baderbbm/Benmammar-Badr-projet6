@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,38 +70,32 @@ public class OperationServiceTest {
     
     @Test
     public void testFindByUtilisateur() {
-        // Créez un UtilisateurDTO simulé
         UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
-        utilisateurDTO.setAdresseEmail("utilisateur@example.com");
-
-        // Créez un Utilisateur simulé
+        utilisateurDTO.setAdresseEmail("example@example.com");
         Utilisateur utilisateurSimule = new Utilisateur();
-        utilisateurSimule.setAdresseEmail("utilisateur@example.com");
-
-        // Créez une liste d'opérations simulées
+        utilisateurSimule.setUtilisateurId(1); 
+        utilisateurSimule.setAdresseEmail("example@example.com"); 
         List<Operation> operationsSimulees = new ArrayList<>();
-        Operation operation1 = new Operation();
-        operation1.setOperationId(1);
-        operation1.setMontant(BigDecimal.valueOf(50.0));
-        operation1.setDateetheureoperation(LocalDateTime.now());
-        operation1.setNatureoperation(NatureOperation.depot);
-        operation1.setUtilisateur(utilisateurSimule);
-        operationsSimulees.add(operation1);
-
-        // Configurez les comportements simulés pour les méthodes du service
         when(utilisateurService.findByAdresseEmail(utilisateurDTO.getAdresseEmail()))
-                .thenReturn(utilisateurSimule);
-        when(operationRepository.findByUtilisateur(utilisateurSimule)).thenReturn(operationsSimulees);
-
-        // Appelez la méthode à tester
+            .thenReturn(utilisateurSimule);
         List<Operation> result = operationService.findByUtilisateur(utilisateurDTO);
-
-        // Effectuez des assertions
-        assertEquals(1, result.size());
-        Operation operationResult = result.get(0);
-        assertEquals(1, operationResult.getOperationId());
-        assertEquals(BigDecimal.valueOf(50.0), operationResult.getMontant());
-        assertEquals(NatureOperation.depot, operationResult.getNatureoperation());
+        assertEquals(operationsSimulees, result);
+       verify(utilisateurService, times(1)).findByAdresseEmail(utilisateurDTO.getAdresseEmail());
+    }
+    
+    @Test
+    public void testFindByUtilisateurDTO() {
+        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setAdresseEmail("example@example.com");
+        Utilisateur utilisateurSimule = new Utilisateur();
+        utilisateurSimule.setUtilisateurId(1); 
+        utilisateurSimule.setAdresseEmail("example@example.com"); 
+        List<OperationDTO> operationDTOSimulees = new ArrayList<>();
+        when(utilisateurService.findByAdresseEmail(utilisateurDTO.getAdresseEmail()))
+            .thenReturn(utilisateurSimule);
+        List<OperationDTO> result = operationService.findByUtilisateurDTO(utilisateurDTO);
+        assertEquals(operationDTOSimulees, result);
+        verify(utilisateurService, times(1)).findByAdresseEmail(utilisateurDTO.getAdresseEmail());
     }
         
 }
