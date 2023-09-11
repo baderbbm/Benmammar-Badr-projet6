@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,14 +34,6 @@ public class UtilisateurService {
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
 
-	public Iterable<Utilisateur> getUsers() {
-		return utilisateurRepository.findAll();
-	}
-
-	public Optional<Utilisateur> getUserById(Integer id) {
-		return utilisateurRepository.findById(id);
-	}
-
 
 	public UtilisateurDTO addUtilisateur(UtilisateurDTO utilisateurDTO) {
 		try {
@@ -54,23 +45,6 @@ public class UtilisateurService {
 		}
 	}
 
-	public void deleteUtilisateurById(Integer id) {
-		utilisateurRepository.deleteById(id);
-	}
-
-	public Iterable<Utilisateur> getUsersByName(String name) {
-		return utilisateurRepository.findByNom(name);
-	}
-
-	public Iterable<Utilisateur> findByNameNative(String nom) {
-		return utilisateurRepository.findByNameNative(nom);
-	}
-
-	public Iterable<Utilisateur> findByNameJPQL(String nom) {
-		return utilisateurRepository.findByNameJPQL(nom);
-	}
-
-	
 	  public UtilisateurDTO findByAdresseEmailDTO(String adresseEmail) { 
 		  return convertToDTO(findByAdresseEmail(adresseEmail)); 
 		  }
@@ -151,32 +125,23 @@ public class UtilisateurService {
 	        BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
 	        Utilisateur emetteur = findByAdresseEmail(adresseEmailEmetteur);
 	        Utilisateur beneficiaire = findByAdresseEmail(adresseEmailBeneficiaire);
-
-	        if (emetteur != null && beneficiaire != null) {
 	            BigDecimal soldeEmetteur = emetteur.getSoldeDuCompte();
-
 	            if (soldeEmetteur.compareTo(montant) >= 0) {
 	                emetteur.effectuerRetrait(montant);
 	                beneficiaire.effectuerDepot(montantAvecPrelevement);
-
 	                // Mise à jour des utilisateurs dans la base de données
 	                utilisateurRepository.save(emetteur);
 	                utilisateurRepository.save(beneficiaire);
-
 	                // Création et sauvegarde du transfert
 	                Transfert transfert = new Transfert();
 	                transfert.setUtilisateurEmetteur(emetteur);
 	                transfert.setUtilisateurBeneficiaire(beneficiaire);
 	                transfert.setMontant(montant);
 	                transfert.setDateHeureTransfert(LocalDateTime.now());
-
 	                transfertRepository.save(transfert);
 	            } else {
 	                throw new InsufficientBalanceException("Solde insuffisant pour effectuer le virement.");
 	            }
-	        } else {
-	            throw new IllegalArgumentException("Utilisateurs introuvables.");
-	        }
 	    }
 	 
 		public List<UtilisateurDTO> getAmis(String emailAddress) {
@@ -186,6 +151,4 @@ public class UtilisateurService {
 			}
 			return amis;
 		}
-
-
 }
