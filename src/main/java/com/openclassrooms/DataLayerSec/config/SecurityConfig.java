@@ -1,4 +1,3 @@
-
 package com.openclassrooms.DataLayerSec.config;
 
 import org.springframework.context.annotation.Bean;
