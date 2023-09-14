@@ -9,8 +9,10 @@ import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.model.Operation;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.OperationRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class OperationService {
     
     private final OperationRepository operationRepository;
