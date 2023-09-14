@@ -9,8 +9,10 @@ import com.openclassrooms.DataLayerSec.dto.UtilisateurDTO;
 import com.openclassrooms.DataLayerSec.model.Transfert;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.TransfertRepository;
- 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class TransfertService {
  
 	@Autowired
