@@ -18,8 +18,10 @@ import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.OperationRepository;
 import com.openclassrooms.DataLayerSec.repository.TransfertRepository;
 import com.openclassrooms.DataLayerSec.repository.UtilisateurRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class UtilisateurService {
 
 	@Autowired
