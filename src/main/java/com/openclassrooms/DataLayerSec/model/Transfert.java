@@ -2,11 +2,8 @@ package com.openclassrooms.DataLayerSec.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -75,13 +72,4 @@ public class Transfert {
 	public void setDateHeureTransfert(LocalDateTime dateHeureTransfert) {
 		this.dateHeureTransfert = dateHeureTransfert;
 	}
-
-	@Override
-	public String toString() {
-		return "transfertId=" + transfertId + ", utilisateurEmetteur=" + utilisateurEmetteur
-				+ ", utilisateurBeneficiaire=" + utilisateurBeneficiaire + ", montant=" + montant
-				+ ", dateHeureTransfert=" + dateHeureTransfert;
-	}
-
-   
 }
