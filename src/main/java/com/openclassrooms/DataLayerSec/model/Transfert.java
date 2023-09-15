@@ -1,4 +1,4 @@
-package com.openclassrooms.DataLayerSec.model; 
+package com.openclassrooms.DataLayerSec.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,24 +14,35 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "transfert")
 public class Transfert {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private int transfertId;
-    
-    @ManyToOne
-  	@JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID")
-  	private Utilisateur utilisateurEmetteur;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private int transfertId;
 
-      @ManyToOne
-    	@JoinColumn(name = "IDutilisateurbeneficiaire", referencedColumnName = "ID")
-    	private Utilisateur utilisateurBeneficiaire;
-    
-    @Column(name = "Montant")
-    private BigDecimal montant;
+	@ManyToOne
+	@JoinColumn(name = "IDutilisateuremetteur", referencedColumnName = "ID")
+	private Utilisateur utilisateurEmetteur;
 
-    @Column(name = "Dateetheuredutransfert")
-    private LocalDateTime dateHeureTransfert;
+	@ManyToOne
+	@JoinColumn(name = "IDutilisateurbeneficiaire", referencedColumnName = "ID")
+	private Utilisateur utilisateurBeneficiaire;
+
+	@Column(name = "Montant")
+	private BigDecimal montant;
+
+	@Column(name = "Dateetheuredutransfert")
+	private LocalDateTime dateHeureTransfert;
+
+	@Column(name = "Description")
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public int getTransfertId() {
 		return transfertId;
