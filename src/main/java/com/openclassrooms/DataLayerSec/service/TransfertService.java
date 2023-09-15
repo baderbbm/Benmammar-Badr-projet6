@@ -10,7 +10,7 @@ import com.openclassrooms.DataLayerSec.model.Transfert;
 import com.openclassrooms.DataLayerSec.model.Utilisateur;
 import com.openclassrooms.DataLayerSec.repository.TransfertRepository;
 import jakarta.transaction.Transactional;
-
+ 
 @Service
 @Transactional
 public class TransfertService {
@@ -39,10 +39,12 @@ public class TransfertService {
             transfertDTO.setUtilisateurEmetteurDTO(emetteurDTO); 
             UtilisateurDTO beneficiaireDTO = new UtilisateurDTO();
             Utilisateur utilisateurBeneficiaire = transfert.getUtilisateurBeneficiaire();
-            if (utilisateurBeneficiaire != null) beneficiaireDTO.setNom(utilisateurBeneficiaire.getNom());
+            if (utilisateurBeneficiaire != null)
+            beneficiaireDTO.setNom(utilisateurBeneficiaire.getNom());
             transfertDTO.setUtilisateurBeneficiaireDTO(beneficiaireDTO); 
             transfertDTO.setMontant(transfert.getMontant());
             transfertDTO.setDateHeureTransfert(transfert.getDateHeureTransfert());
+            transfertDTO.setDescription(transfert.getDescription());
             transfertDTOList.add(transfertDTO);
         }
         return transfertDTOList;
