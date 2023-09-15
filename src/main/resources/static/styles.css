@@ -1,4 +1,3 @@
-
 /* Styles pour les liens */
 a {
     text-decoration: none; /* Supprime le soulignement par défaut des liens */
@@ -31,6 +30,10 @@ button {
 
 button:hover {
     background-color: #0056b3; /* Couleur de fond du bouton au survol */
+}
+.spaced-table {
+    border-collapse: separate; /* Cela permet de séparer les cellules */
+    border-spacing: 15px; /* Ajoutez l'espace entre les cellules ici, par exemple 15px */
 }
 
 
