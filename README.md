@@ -1,3 +1,3 @@
-![Diagramme de classe UML](../Readme/uml.png)
+![Diagramme de classe UML](Readme/uml.png)
 
-![Modèle physique de données](../Readme/physique.png)
+![Modèle physique de données](Readme/physique.png)
