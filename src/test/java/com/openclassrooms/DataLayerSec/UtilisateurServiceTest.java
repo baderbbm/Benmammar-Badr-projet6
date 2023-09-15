@@ -181,7 +181,7 @@ public class UtilisateurServiceTest {
         beneficiaireSimule.setSoldeDuCompte(BigDecimal.valueOf(50.0));
         when(utilisateurRepository.findByAdresseEmail(adresseEmailEmetteur)).thenReturn(emetteurSimule);
         when(utilisateurRepository.findByAdresseEmail(adresseEmailBeneficiaire)).thenReturn(beneficiaireSimule);
-        utilisateurService.effectuerVirement(adresseEmailEmetteur, adresseEmailBeneficiaire, montant);
+        utilisateurService.effectuerVirement(adresseEmailEmetteur, adresseEmailBeneficiaire, montant, " ");
         assertEquals(BigDecimal.valueOf(100.0), emetteurSimule.getSoldeDuCompte());
         assertTrue(Precision.equals(BigDecimal.valueOf(50.0 + 99.5).doubleValue(), 
         		beneficiaireSimule.getSoldeDuCompte().doubleValue(), 0.001));       
