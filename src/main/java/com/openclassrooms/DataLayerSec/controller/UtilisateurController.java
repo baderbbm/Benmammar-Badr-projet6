@@ -119,13 +119,13 @@ public class UtilisateurController {
 
 	@PostMapping("/effectuerVirement")
 	public String effectuerVirement(@RequestParam String adresseEmailBeneficiaire, @RequestParam BigDecimal montant,
-			ModelMap model, Authentication authentication) {
+			@RequestParam String description, ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
 		UtilisateurDTO beneficiaireDTO = utilisateurService.findByAdresseEmailDTO(adresseEmailBeneficiaire);
 		try {
 			utilisateurService.effectuerVirement(utilisateurActuelDTO.getAdresseEmail(),
-					beneficiaireDTO.getAdresseEmail(), montant);
+					beneficiaireDTO.getAdresseEmail(), montant, description);
 			model.addAttribute("success", "Virement effectué avec succès.");
 		} catch (InsufficientBalanceException e) {
 			model.addAttribute("error", "Solde insuffisant pour effectuer le virement.");
