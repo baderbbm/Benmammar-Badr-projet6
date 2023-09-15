@@ -15,6 +15,16 @@ public class TransfertDTO {
 
 	private LocalDateTime dateHeureTransfert;
 
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public int getTransfertId() {
 		return transfertId;
 	}
@@ -23,12 +33,12 @@ public class TransfertDTO {
 		this.transfertId = transfertId;
 	}
 
-	public UtilisateurDTO getUtilisateurEmetteurDTO() {
-		return utilisateurEmetteurDTO;
-	}
-
 	public void setUtilisateurEmetteurDTO(UtilisateurDTO utilisateurEmetteurDTO) {
 		this.utilisateurEmetteurDTO = utilisateurEmetteurDTO;
+	}
+
+	public UtilisateurDTO getUtilisateurEmetteurDTO() {
+		return utilisateurEmetteurDTO;
 	}
 
 	public UtilisateurDTO getUtilisateurBeneficiaireDTO() {
@@ -54,6 +64,4 @@ public class TransfertDTO {
 	public void setDateHeureTransfert(LocalDateTime dateHeureTransfert) {
 		this.dateHeureTransfert = dateHeureTransfert;
 	}
-	
-	
 }
