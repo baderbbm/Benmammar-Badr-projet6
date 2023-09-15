@@ -65,18 +65,15 @@ public class UtilisateurControllerTest {
 
 	@BeforeEach
     public void setUp() {
-       
         when(utilisateurService.findByAdresseEmailDTO("utilisateur@example.com"))
                 .thenReturn(new UtilisateurDTO());
     }
 
-	
 	@Test
     public void testLogin() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk());
     }
-
 
 	@Test
 	@WithMockUser 
@@ -92,7 +89,7 @@ public class UtilisateurControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.view().name("enregistrer-utilisateur"));
 	}
-
+	
 	@Test
 	public void testShowAjouterAmiForm() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/ajouterAmi").with(user("testuser").password("password")))
@@ -230,8 +227,8 @@ public class UtilisateurControllerTest {
 	        when(utilisateurService.findByAdresseEmailDTO("utilisateur@example.com")).thenReturn(utilisateurActuelDTO);
 	        when(utilisateurService.findByAdresseEmailDTO("beneficiaire@example.com")).thenReturn(beneficiaireDTO);
 	        ModelMap model = new ModelMap();
-	        String viewName = utilisateurController.effectuerVirement("beneficiaire@example.com", montant, model, authentication);
-	        verify(utilisateurService, times(1)).effectuerVirement("utilisateur@example.com", "beneficiaire@example.com", montant);
+	        String viewName = utilisateurController.effectuerVirement("beneficiaire@example.com", montant," ", model, authentication);
+	        verify(utilisateurService, times(1)).effectuerVirement("utilisateur@example.com", "beneficiaire@example.com", montant, " ");
 	        assert model.containsAttribute("success");
 	        assert "effectuerVirement".equals(viewName);
 	    }
@@ -244,7 +241,7 @@ public class UtilisateurControllerTest {
 	        when(authentication.getPrincipal()).thenReturn(userDetails);
 	        when(utilisateurService.findByAdresseEmailDTO(userDetails.getUsername())).thenReturn(new UtilisateurDTO()); 
 	        doThrow(new InsufficientBalanceException(null)).when(utilisateurService).
-	        effectuerVirement(anyString(), anyString(), any(BigDecimal.class));
+	        effectuerVirement(anyString(), anyString(), any(BigDecimal.class),  anyString());
 	        ModelMap model = new ModelMap();
 	        ResultActions resultActions = mockMvc.perform(
 	                MockMvcRequestBuilders.post("/effectuerVirement")
@@ -253,14 +250,13 @@ public class UtilisateurControllerTest {
 	                        .with(user("utilisateur@example.com").password("password"))
 	        );
 	        resultActions.andExpect(MockMvcResultMatchers.status().isForbidden()) ;
-	        verify(utilisateurService, never()).effectuerVirement(anyString(), anyString(), any(BigDecimal.class));
+	        verify(utilisateurService, never()).effectuerVirement(anyString(), anyString(), any(BigDecimal.class),  anyString());
 	    }
 	    
 	    @Test
 	    public void testEnregistrerUtilisateur_Success() throws Exception {
 	        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
 	        utilisateurDTO.setAdresseEmail("nouvel_utilisateur@example.com");
-	        ModelMap model = new ModelMap();
 	        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 	        String viewName = utilisateurController.enregistrerUtilisateur(utilisateurDTO, redirectAttributes);
 	        verify(utilisateurService, times(1)).addUtilisateur(utilisateurDTO);
@@ -272,7 +268,6 @@ public class UtilisateurControllerTest {
 	    public void testEnregistrerUtilisateur_EmailExists() throws Exception {
 	        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
 	        utilisateurDTO.setAdresseEmail("utilisateur_existant@example.com");
-	        ModelMap model = new ModelMap();
 	        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 	        doThrow(new EmailExistsException("Adresse email déjà existante")).when(utilisateurService).addUtilisateur(utilisateurDTO);
 	        String viewName = utilisateurController.enregistrerUtilisateur(utilisateurDTO, redirectAttributes);
