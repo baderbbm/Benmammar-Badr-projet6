@@ -123,7 +123,7 @@ public class UtilisateurService {
 
 		return utilisateurDTO;
 	}
-	 public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant) {
+	 public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant, String description) {
 	        BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
 	        Utilisateur emetteur = findByAdresseEmail(adresseEmailEmetteur);
 	        Utilisateur beneficiaire = findByAdresseEmail(adresseEmailBeneficiaire);
@@ -140,6 +140,7 @@ public class UtilisateurService {
 	                transfert.setUtilisateurBeneficiaire(beneficiaire);
 	                transfert.setMontant(montant);
 	                transfert.setDateHeureTransfert(LocalDateTime.now());
+	                transfert.setDescription(description);
 	                transfertRepository.save(transfert);
 	            } else {
 	                throw new InsufficientBalanceException("Solde insuffisant pour effectuer le virement.");
