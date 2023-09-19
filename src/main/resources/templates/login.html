@@ -7,9 +7,13 @@
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
             margin: 0;
+            padding: 0; /* Supprime la marge intérieure par défaut */
+        }
+
+        .container {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-start; /* Aligne le contenu en haut */
+            justify-content: flex-start; /* Aligne le contenu à gauche */
             height: 100vh;
         }
 
@@ -58,14 +62,16 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form method="post" th:action="@{/process-login}">
-    <div>
-        <input name="username" placeholder="Username" type="text"/>
-    </div>
-    <div>
-        <input name="password" placeholder="Password" type="password"/>
-    </div>
-    <input type="submit" value="Log in"/>
-</form>
+<div class="container"> <!-- Ajoutez une div de conteneur pour aligner le contenu en haut à gauche -->
+    <form method="post" th:action="@{/process-login}">
+        <div>
+            <input name="username" placeholder="Username" type="text"/>
+        </div>
+        <div>
+            <input name="password" placeholder="Password" type="password"/>
+        </div>
+        <input type="submit" value="Log in"/>
+    </form>
+</div>
 </body>
 </html>
