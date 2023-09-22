@@ -2,4 +2,4 @@
 
 ![Modèle physique de données](Readme/physique.png)
 
-![Modèle physique de données](Readme/presentation-projet6.pdf)
+![Présentation du projet](Readme/presentation-projet6.pdf)
