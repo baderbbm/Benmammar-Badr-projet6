@@ -32,4 +32,4 @@
 ![Modèle physique de données](Readme/physique.png)
 
 ##  Présentation pdf du projet
-(Readme/presentation.pdf)
+![Consulter la présentation](Readme/presentation.pdf)
