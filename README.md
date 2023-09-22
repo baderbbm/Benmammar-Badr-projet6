@@ -27,8 +27,9 @@
 
 ![Diagramme de classe UML](Readme/uml.png)
 
-![Modèle physique de données](Readme/physique.png)
-
 ##  Modèle physique de données
 
-![Voir la présentation du projet](Readme/presentation-projet6.pdf)
+![Modèle physique de données](Readme/physique.png)
+
+##  Présentation pdf du projet
+![Voir la présentation](Readme/presentation-projet6.pdf)
