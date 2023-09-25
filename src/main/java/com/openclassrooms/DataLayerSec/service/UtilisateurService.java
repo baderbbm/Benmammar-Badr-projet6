@@ -36,7 +36,7 @@ public class UtilisateurService {
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
 
-
+	// Ajoute un nouvel utilisateur dans la base de données
 	public UtilisateurDTO addUtilisateur(UtilisateurDTO utilisateurDTO) {
 		try {
 			String encryptedPassword = passwordEncoder.encode(utilisateurDTO.getMotDePasse());
@@ -47,28 +47,34 @@ public class UtilisateurService {
 		}
 	}
 
-	  public UtilisateurDTO findByAdresseEmailDTO(String adresseEmail) { 
-		  return convertToDTO(findByAdresseEmail(adresseEmail)); 
-		  }
-	  
-	 
+	// Trouve un utilisateur par son adresse e-mail
+	public UtilisateurDTO findByAdresseEmailDTO(String adresseEmail) {
+		return convertToDTO(findByAdresseEmail(adresseEmail));
+	}
+
+	// Trouve un utilisateur par son adresse e-mail
 	public Utilisateur findByAdresseEmail(String adresseEmail) {
 		return utilisateurRepository.findByAdresseEmail(adresseEmail);
 	}
 
+	// Ajoute un ami à la liste d'amis de l'utilisateur actuel
 	public void ajouterAmi(UtilisateurDTO utilisateurDTO, UtilisateurDTO amiDTO) throws Exception {
-		if (amiDTO==null) throw new Exception ("Aucun utilisateur trouvé avec cette adresse e-mail.");
+		if (amiDTO == null)
+			throw new Exception("Aucun utilisateur trouvé avec cette adresse e-mail.");
 		Utilisateur utilisateur = findByAdresseEmail(utilisateurDTO.getAdresseEmail());
 		Utilisateur ami = findByAdresseEmail(amiDTO.getAdresseEmail());
-		if (utilisateur.getAmis().contains(ami)) throw new Exception ("Cet utilisateur est déjà dans votre liste d'amis.");
+		if (utilisateur.getAmis().contains(ami))
+			throw new Exception("Cet utilisateur est déjà dans votre liste d'amis.");
 		utilisateur.getAmis().add(ami);
-		utilisateurRepository.save(utilisateur);	
+		utilisateurRepository.save(utilisateur);
 	}
 
+	// Effectue un dépôt sur le compte de l'utilisateur actuel
 	public void effectuerDepot(UtilisateurDTO utilisateurDTO, BigDecimal montant) throws Exception {
-		if (utilisateurDTO==null) throw new Exception ("Utilisateur introuvable.");
+		if (utilisateurDTO == null)
+			throw new Exception("Utilisateur introuvable.");
 		BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
-		Utilisateur utilisateur=findByAdresseEmail(utilisateurDTO.getAdresseEmail());
+		Utilisateur utilisateur = findByAdresseEmail(utilisateurDTO.getAdresseEmail());
 		utilisateur.effectuerDepot(montantAvecPrelevement);
 		utilisateurRepository.save(utilisateur);
 		Operation operation = new Operation();
@@ -79,10 +85,12 @@ public class UtilisateurService {
 		operationRepository.save(operation);
 	}
 
+	// Effectue un retrait du compte de l'utilisateur actuel
 	public void effectuerRetrait(UtilisateurDTO utilisateurDTO, BigDecimal montant) throws Exception {
-		if (utilisateurDTO==null) throw new Exception ("Utilisateur introuvable.");
+		if (utilisateurDTO == null)
+			throw new Exception("Utilisateur introuvable.");
 		BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
-		Utilisateur utilisateur=findByAdresseEmail(utilisateurDTO.getAdresseEmail());		
+		Utilisateur utilisateur = findByAdresseEmail(utilisateurDTO.getAdresseEmail());
 		if (utilisateur.getSoldeDuCompte().compareTo(montant) >= 0) {
 			utilisateur.effectuerRetrait(montantAvecPrelevement);
 			utilisateurRepository.save(utilisateur);
@@ -98,6 +106,7 @@ public class UtilisateurService {
 		}
 	}
 
+	// Convertit un DTO en entité
 	public Utilisateur convertToEntity(UtilisateurDTO utilisateurDTO) {
 		Utilisateur utilisateur = new Utilisateur();
 		utilisateur.setUtilisateurId(utilisateurDTO.getUtilisateurId());
@@ -109,6 +118,7 @@ public class UtilisateurService {
 		return utilisateur;
 	}
 
+	// Convertit une entité en DTO
 	public UtilisateurDTO convertToDTO(Utilisateur utilisateur) {
 		if (utilisateur == null) {
 			return null;
@@ -123,35 +133,39 @@ public class UtilisateurService {
 
 		return utilisateurDTO;
 	}
-	 public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant, String description) {
-	        BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
-	        Utilisateur emetteur = findByAdresseEmail(adresseEmailEmetteur);
-	        Utilisateur beneficiaire = findByAdresseEmail(adresseEmailBeneficiaire);
-	            BigDecimal soldeEmetteur = emetteur.getSoldeDuCompte();
-	            if (soldeEmetteur.compareTo(montant) >= 0) {
-	                emetteur.effectuerRetrait(montant);
-	                beneficiaire.effectuerDepot(montantAvecPrelevement);
-	                // Mise à jour des utilisateurs dans la base de données
-	                utilisateurRepository.save(emetteur);
-	                utilisateurRepository.save(beneficiaire);
-	                // Création et sauvegarde du transfert
-	                Transfert transfert = new Transfert();
-	                transfert.setUtilisateurEmetteur(emetteur);
-	                transfert.setUtilisateurBeneficiaire(beneficiaire);
-	                transfert.setMontant(montant);
-	                transfert.setDateHeureTransfert(LocalDateTime.now());
-	                transfert.setDescription(description);
-	                transfertRepository.save(transfert);
-	            } else {
-	                throw new InsufficientBalanceException("Solde insuffisant pour effectuer le virement.");
-	            }
-	    }
-	 
-		public List<UtilisateurDTO> getAmis(String emailAddress) {
-			List<UtilisateurDTO> amis = new ArrayList<>();
-			for (Utilisateur ami : findByAdresseEmail(emailAddress).getAmis()) {
-				amis.add(convertToDTO(ami));
-			}
-			return amis;
+
+	// Effectue un virement d'un utilisateur à un autre
+	public void effectuerVirement(String adresseEmailEmetteur, String adresseEmailBeneficiaire, BigDecimal montant,
+			String description) {
+		BigDecimal montantAvecPrelevement = montant.multiply(BigDecimal.valueOf(0.995)); // 0.5% de prélèvement
+		Utilisateur emetteur = findByAdresseEmail(adresseEmailEmetteur);
+		Utilisateur beneficiaire = findByAdresseEmail(adresseEmailBeneficiaire);
+		BigDecimal soldeEmetteur = emetteur.getSoldeDuCompte();
+		if (soldeEmetteur.compareTo(montant) >= 0) {
+			emetteur.effectuerRetrait(montant);
+			beneficiaire.effectuerDepot(montantAvecPrelevement);
+			// Mise à jour des utilisateurs dans la base de données
+			utilisateurRepository.save(emetteur);
+			utilisateurRepository.save(beneficiaire);
+			// Création et sauvegarde du transfert
+			Transfert transfert = new Transfert();
+			transfert.setUtilisateurEmetteur(emetteur);
+			transfert.setUtilisateurBeneficiaire(beneficiaire);
+			transfert.setMontant(montant);
+			transfert.setDateHeureTransfert(LocalDateTime.now());
+			transfert.setDescription(description);
+			transfertRepository.save(transfert);
+		} else {
+			throw new InsufficientBalanceException("Solde insuffisant pour effectuer le virement.");
 		}
+	}
+
+	// Récupère la liste d'amis d'un utilisateur par son adresse e-mail
+	public List<UtilisateurDTO> getAmis(String emailAddress) {
+		List<UtilisateurDTO> amis = new ArrayList<>();
+		for (Utilisateur ami : findByAdresseEmail(emailAddress).getAmis()) {
+			amis.add(convertToDTO(ami));
+		}
+		return amis;
+	}
 }
