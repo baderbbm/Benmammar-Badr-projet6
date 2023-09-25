@@ -24,7 +24,7 @@ import com.openclassrooms.DataLayerSec.service.UtilisateurService;
 @Controller
 public class UtilisateurController {
 	private UtilisateurService utilisateurService;
-	
+
 	@Autowired
 	private OperationService operationService;
 
@@ -41,7 +41,7 @@ public class UtilisateurController {
 		return "enregistrer-utilisateur";
 	}
 
-@PostMapping("/enregistrerUtilisateur")
+	@PostMapping("/enregistrerUtilisateur")
 	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO,
 			RedirectAttributes redirectAttributes) {
 		try {
@@ -52,7 +52,7 @@ public class UtilisateurController {
 		}
 		return "redirect:/enregistrerUtilisateur";
 	}
-	
+
 	@GetMapping("/ajouterAmi")
 	public String showAjouterAmiForm() {
 		return "ajouter-ami";
@@ -138,7 +138,7 @@ public class UtilisateurController {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		UtilisateurDTO utilisateurActuelDTO = utilisateurService.findByAdresseEmailDTO(userDetails.getUsername());
 		List<OperationDTO> operations = operationService.findByUtilisateurDTO(utilisateurActuelDTO);
-		List<TransfertDTO> transferts =transfertService.getVirementsByUtilisateurEmetteurDTO(utilisateurActuelDTO);
+		List<TransfertDTO> transferts = transfertService.getVirementsByUtilisateurEmetteurDTO(utilisateurActuelDTO);
 		model.addAttribute("operations", operations);
 		model.addAttribute("transferts", transferts);
 		return "historique-operations";
