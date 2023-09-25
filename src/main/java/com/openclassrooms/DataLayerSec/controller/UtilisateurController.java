@@ -36,11 +36,13 @@ public class UtilisateurController {
 		this.utilisateurService = utilisateurService;
 	}
 
+	// Affiche le formulaire d'enregistrement de l'utilisateur
 	@GetMapping("/enregistrerUtilisateur")
 	public String showEnregistrerUtilisateurForm(@ModelAttribute("utilisateurDTO") UtilisateurDTO utilisateurDTO) {
 		return "enregistrer-utilisateur";
 	}
 
+	// Enregistre un nouvel utilisateur
 	@PostMapping("/enregistrerUtilisateur")
 	public String enregistrerUtilisateur(@ModelAttribute UtilisateurDTO utilisateurDTO,
 			RedirectAttributes redirectAttributes) {
@@ -53,11 +55,13 @@ public class UtilisateurController {
 		return "redirect:/enregistrerUtilisateur";
 	}
 
+	// Affiche le formulaire d'ajout d'ami
 	@GetMapping("/ajouterAmi")
 	public String showAjouterAmiForm() {
 		return "ajouter-ami";
 	}
 
+	// Ajoute un ami à l'utilisateur actuel
 	@PostMapping("/ajouterAmi")
 	public String ajouterAmi(@RequestParam String adresseEmailAmi, ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -73,11 +77,13 @@ public class UtilisateurController {
 		return "ajouter-ami";
 	}
 
+	// Affiche le formulaire d'effectuer un dépôt
 	@GetMapping("/effectuerDepot")
 	public String showEffectuerDepotForm() {
 		return "effectuerDepot";
 	}
 
+	// Effectue un dépôt sur le compte de l'utilisateur actuel
 	@PostMapping("/effectuerDepot")
 	public String effectuerDepot(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -91,11 +97,13 @@ public class UtilisateurController {
 		return "effectuerDepot";
 	}
 
+	// Affiche le formulaire d'effectuer un retrait
 	@GetMapping("/effectuerRetrait")
 	public String showEffectuerRetraitForm() {
 		return "effectuerRetrait";
 	}
 
+	// Effectue un retrait du compte de l'utilisateur actuel
 	@PostMapping("/effectuerRetrait")
 	public String effectuerRetrait(@RequestParam BigDecimal montant, ModelMap model, Authentication authentication)
 			throws Exception {
@@ -110,6 +118,7 @@ public class UtilisateurController {
 		return "effectuerRetrait";
 	}
 
+	// Affiche le formulaire d'effectuer un virement
 	@GetMapping("/effectuerVirement")
 	public String showEffectuerVirementForm(ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -117,6 +126,7 @@ public class UtilisateurController {
 		return "effectuerVirement";
 	}
 
+	// Effectue un virement vers un bénéficiaire
 	@PostMapping("/effectuerVirement")
 	public String effectuerVirement(@RequestParam String adresseEmailBeneficiaire, @RequestParam BigDecimal montant,
 			@RequestParam String description, ModelMap model, Authentication authentication) {
@@ -133,6 +143,7 @@ public class UtilisateurController {
 		return "effectuerVirement";
 	}
 
+	// Affiche l'historique des opérations de l'utilisateur actuel
 	@GetMapping("/historiqueOperations")
 	public String showHistoriqueOperations(ModelMap model, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -144,11 +155,13 @@ public class UtilisateurController {
 		return "historique-operations";
 	}
 
+	// Affiche la page de connexion
 	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
 
+	// Affiche la page d'accueil
 	@GetMapping("/home")
 	public String home() {
 		return "home";
