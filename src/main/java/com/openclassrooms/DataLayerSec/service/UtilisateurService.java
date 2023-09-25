@@ -47,12 +47,14 @@ public class UtilisateurService {
 		}
 	}
 
-	// Trouve un utilisateur par son adresse e-mail
+	// Trouve un utilisateur par son adresse e-mail et renvoie un objet
+	// UtilisateurDTO représentant l'utilisateur
 	public UtilisateurDTO findByAdresseEmailDTO(String adresseEmail) {
 		return convertToDTO(findByAdresseEmail(adresseEmail));
 	}
 
-	// Trouve un utilisateur par son adresse e-mail
+	// Trouve un utilisateur par son adresse e-mail et renvoie l'objet Utilisateur
+	// correspondant
 	public Utilisateur findByAdresseEmail(String adresseEmail) {
 		return utilisateurRepository.findByAdresseEmail(adresseEmail);
 	}
